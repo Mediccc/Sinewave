@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sinewave", "Sinewave\Sinewave.vcxproj", "{C32D3692-742B-47F1-85B4-D89AF1ED063C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Debug|x64.ActiveCfg = Debug|x64
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Debug|x64.Build.0 = Debug|x64
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Debug|x86.ActiveCfg = Debug|Win32
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Debug|x86.Build.0 = Debug|Win32
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Release|x64.ActiveCfg = Release|x64
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Release|x64.Build.0 = Release|x64
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Release|x86.ActiveCfg = Release|Win32
+		{C32D3692-742B-47F1-85B4-D89AF1ED063C}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4742B884-C72C-4710-9363-31780C36DC0B}
+	EndGlobalSection
+EndGlobal
