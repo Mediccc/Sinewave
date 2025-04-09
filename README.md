@@ -26,3 +26,7 @@ If you want to uninstall Sinewave:
 
 # Note
 Sinewave is currently very simple, but more updates are coming soon!
+
+Windows defender might flag Sinewave as a **false positive**. 
+
+To get around that, add the Sinewave folder to the **Exclusions** list from your AV.
