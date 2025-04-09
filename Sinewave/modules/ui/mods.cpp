@@ -8,7 +8,7 @@ void initMods() {
                 Config::saveConfig();
             }
 
-            if (ImGui::Checkbox("Multiple Roblox", &config.multiRoblox)) {
+            if (ImGui::Checkbox("Multi Roblox", &config.multiRoblox)) {
                 Config::saveConfig();
             }
             
