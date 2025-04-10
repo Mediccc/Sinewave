@@ -16,6 +16,26 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 2. Run **Sinewave**
 3. Enjoy!
 
+# Building From Source
+If you want to build Sinewave yourself, here's how:
+1. **Clone the Sinewave repository**
+
+ 
+   ```
+   git clone https://github.com/Mediccc/Sinewave.git
+   cd Sinewave
+   ```
+2. **Open Sinewave in Visual Studio 2022**
+
+   * Open the `.sln` file found in the Sinewave directory.
+   
+3. **Build the project**
+
+   * Make sure to build Sinewave in `Release` mode.
+
+4. **Output**
+   * You'll find the Sinewave file in `x64/Release/`.
+
 # Usage
 For Sinewave to work correctly, please start games from the **Roblox website**.
 
