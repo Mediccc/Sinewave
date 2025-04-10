@@ -24,6 +24,26 @@ If you want to uninstall Sinewave:
 * Delete the Sinewave folder from **%appdata%**.
 * Run the **Roblox** installer
 
+# Building From Source
+If you want to build Sinewave yourself, here's how:
+1. **Clone the Sinewave repository**
+
+ 
+   ```
+   git clone https://github.com/Mediccc/Sinewave.git
+   cd Sinewave
+   ```
+2. **Open Sinewave in Visual Studio 2022**
+
+   * Open the `.sln` file found in the Sinewave directory.
+   
+3. **Build the project**
+
+   * Make sure to build Sinewave in `Release` mode.
+
+4. **Output**
+   * You'll find the Sinewave file in `x64/Release/`.
+
 # Note
 Sinewave is currently very simple, but more updates are coming soon!
 
