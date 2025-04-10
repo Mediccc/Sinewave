@@ -214,4 +214,11 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="discord-rpc.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Roboto-Regular.ttf" />
+  </ItemGroup>
 </Project>
