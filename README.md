@@ -16,6 +16,14 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 2. Run **Sinewave**
 3. Enjoy!
 
+# Usage
+For Sinewave to work correctly, please start games from the **Roblox website**.
+
+If you want to uninstall Sinewave:
+* Delete the folder Sinewave is installed in.
+* Delete the Sinewave folder from **%appdata%**.
+* Run the **Roblox** installer
+
 # Building From Source
 If you want to build Sinewave yourself, here's how:
 1. **Clone the Sinewave repository**
@@ -35,14 +43,6 @@ If you want to build Sinewave yourself, here's how:
 
 4. **Output**
    * You'll find the Sinewave file in `x64/Release/`.
-
-# Usage
-For Sinewave to work correctly, please start games from the **Roblox website**.
-
-If you want to uninstall Sinewave:
-* Delete the folder Sinewave is installed in.
-* Delete the Sinewave folder from **%appdata%**.
-* Run the **Roblox** installer
 
 # Note
 Sinewave is currently very simple, but more updates are coming soon!
