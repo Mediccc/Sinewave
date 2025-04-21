@@ -89,4 +89,5 @@ public:
 
 void updatePresence();
 
+void copyDirectoryContents(const std::filesystem::path& from, const std::filesystem::path& to);
 void deleteDirectoryContents(const std::filesystem::path& dir);

@@ -36,7 +36,9 @@ void Bootstrapper::initDirectories() {
 			std::filesystem::create_directory(path / "Roblox");
 			std::filesystem::create_directory(path / "Settings");
 			std::filesystem::create_directory(path / "Assets");
-			std::filesystem::create_directory(path / "Assets" / "KeyboardMouse");
+			std::filesystem::create_directory(path / "Assets" / "Cursors");
+			std::filesystem::create_directory(path / "Assets" / "Cursors" / "2014");
+			std::filesystem::create_directory(path / "Assets" / "Cursors" / "2006");
 			
 			std::ofstream ofs;
 			ofs.open(path / "Settings" / "settings.json");
@@ -118,6 +120,8 @@ std::string Bootstrapper::init() {
 			ofs << "{}";
 			ofs.close();
 
+			/* todo: make this look better */
+
 			auto destination = std::filesystem::path(sinewave / "Roblox" / "content");
 			if (!std::filesystem::exists(destination)) {
 				std::filesystem::copy(std::filesystem::path(robloxp / "Versions" / currentVersion.c_str() / "content"), std::filesystem::path(sinewave / "Roblox" / "content"), std::filesystem::copy_options::recursive);
@@ -134,10 +138,12 @@ std::string Bootstrapper::init() {
 			std::vector<std::string> cursors = { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" };
 			std::string base = "https://raw.githubusercontent.com/Mediccc/assets/main/cursors/";
 			for (auto c : cursors) {
-				Http::downloadFile(base + c, std::filesystem::path(sinewave / "Assets" / "KeyboardMouse" / c.c_str()).string());
+				Http::downloadFile(base + c, std::filesystem::path(sinewave / "Assets" / "Cursors" / "2014" / c.c_str()).string());
 			}
 
 			Http::downloadFile("https://raw.githubusercontent.com/Mediccc/assets/refs/heads/main/sounds/ouch.ogg", std::filesystem::path(sinewave / "Assets" / "ouch.ogg").string());
+			Http::downloadFile("https://raw.githubusercontent.com/Mediccc/assets/refs/heads/main/cursors/2006/ArrowCursor.png", std::filesystem::path(sinewave / "Assets" / "Cursors" / "2006" / "ArrowCursor.png").string());
+			Http::downloadFile("https://raw.githubusercontent.com/Mediccc/assets/refs/heads/main/cursors/2006/ArrowFarCursor.png", std::filesystem::path(sinewave / "Assets" / "Cursors" / "2006" / "ArrowFarCursor.png").string());
 
 			Logger::log(Logger::SUCCESS, "Finished installing assets!");
 

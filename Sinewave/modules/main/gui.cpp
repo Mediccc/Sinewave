@@ -1,5 +1,65 @@
 #include "gui.h"
 
+inline ImVec2 pageSize(472, 360);
+
+/* helper function to handle our UI's pages */
+void HandlePages() {
+    if (Bun::selectedPage == 0) {
+        ImGui::SetCursorPos(ImVec2(170, 34)); /* set the cursor pos for the page background */
+        Bun::NavigationPage("HomePage", pageSize, []() {
+            initHome();
+        });
+    }
+    else if (Bun::selectedPage == 1) {
+        ImGui::SetCursorPos(ImVec2(170, 34));
+        Bun::NavigationPage("ModsPage", pageSize, []() {
+            initMods();
+        });
+    }
+    else if (Bun::selectedPage == 2) {
+        ImGui::SetCursorPos(ImVec2(170, 34));
+        Bun::NavigationPage("FFlagsPage", pageSize, []() {
+            initFflags();
+        });
+    }
+    else if (Bun::selectedPage == 3) {
+        ImGui::SetCursorPos(ImVec2(170, 34));
+        Bun::NavigationPage("SettingsPage", pageSize, []() {
+            initSettings();
+        });
+    }
+}
+
+void NavigationExample() {
+    /* set up the navigation bar and buttons */;
+    Bun::NavigationBar("NavBar", ImVec2(150, 360));
+
+    ImGui::Spacing();
+    if (Bun::NavigationButton("Home", ImVec2(130, 35))) {
+        Bun::selectedPage = 0;
+    }
+
+    ImGui::Spacing();
+
+    if (Bun::NavigationButton("Mods", ImVec2(130, 35))) {
+        Bun::selectedPage = 1;
+    }
+
+    ImGui::Spacing();
+
+    if (Bun::NavigationButton("FFlags", ImVec2(130, 35))) {
+        Bun::selectedPage = 2;
+    }
+
+    ImGui::Spacing();
+
+    if (Bun::NavigationButton("Settings", ImVec2(130, 35))) {
+        Bun::selectedPage = 3;
+    }
+
+    HandlePages();
+}
+
 void launchGUI() {
     GUI::initWindow();
     GUI::loadStyle();
@@ -44,18 +104,11 @@ void launchGUI() {
 
         if (show) {
             ImGui::SetNextWindowPos({ 0, 0 });
-            ImGui::SetNextWindowSize({ 700, 450 });
+            ImGui::SetNextWindowSize({ 650, 400 });
 
-            ImGui::Begin("Sinewave | v1.0", &show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-            if (ImGui::BeginTabBar("Sinewave")) {
-                initHome();
-                initMods();
-                initFflags();
-                initSettings();
-
-                ImGui::EndTabBar();
-            }
+            ImGui::Begin("Sinewave | v1.0.2", &show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+            
+            NavigationExample();
 
             ImGui::End();
         }

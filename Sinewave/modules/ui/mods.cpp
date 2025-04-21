@@ -1,43 +1,49 @@
 #include "mods.h"
 
 void initMods() {
-    if (ImGui::BeginTabItem("Mods")) {
+    if (ImGui::BunCheckbox("Discord Rich Presence", &config.discordRPC)) {
+        Config::saveConfig();
+    }
 
-        if (ImGui::CollapsingHeader("Fun")) {
-            if (ImGui::Checkbox("Discord Rich Presence", &config.discordRPC)) {
-                Config::saveConfig();
-            }
+    ImGui::Spacing();
 
-            if (ImGui::Checkbox("Multi Roblox", &config.multiRoblox)) {
-                Config::saveConfig();
-            }
-            
-            ImGui::SameLine();
-            ImGui::Text("(allows you to open multiple Roblox instances)");
+    if (ImGui::BunCheckbox("Multi Roblox", &config.multiRoblox)) {
+        Config::saveConfig();
+    }
 
-            if (ImGui::Checkbox("Show Server Region", &config.serverRegion)) {
-                Config::saveConfig();
-            }
-        }
+    ImGui::Spacing();
 
-        if (ImGui::CollapsingHeader("Customization")) {
-            if (ImGui::Checkbox("Old Roblox Cursors", &config.oldCursors)) {
-                Config::saveConfig();
+    if (ImGui::BunCheckbox("Show Server Region", &config.serverRegion)) {
+        Config::saveConfig();
+    }
 
-                deleteDirectoryContents(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse");
-                std::filesystem::path src = config.oldCursors ? sinewave / "Assets" / "KeyboardMouse" : sinewave / "Roblox" / "ContentBackup" / "textures" / "Cursors" / "KeyboardMouse";
-                std::filesystem::copy(src, std::filesystem::path(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse"));
-            }
+    ImGui::Dummy(ImVec2(20, 20));
 
-            if (ImGui::Checkbox("Old Oof Sound", &config.oofSound)) {
-                Config::saveConfig();
+    if (ImGui::BunCheckbox("2014 Cursors", &config.oldCursors)) {
+        Config::saveConfig();
 
-                std::filesystem::path src = config.oofSound ? sinewave / "Assets" / "ouch.ogg" : sinewave / "Roblox" / "ContentBackup" / "sounds" / "ouch.ogg";
-                std::filesystem::remove(sinewave / "Roblox" / "content" / "sounds" / "ouch.ogg");
-                std::filesystem::copy_file(src, std::filesystem::path(sinewave / "Roblox" / "content" / "sounds" / "ouch.ogg"));
-            }
-        }
+        deleteDirectoryContents(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse");
+        std::filesystem::path src = config.oldCursors ? sinewave / "Assets" / "Cursors" / "2014" : sinewave / "Roblox" / "ContentBackup" / "textures" / "Cursors" / "KeyboardMouse";
+        copyDirectoryContents(src, std::filesystem::path(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse"));
+    }
 
-        ImGui::EndTabItem();
+    ImGui::Spacing();
+
+    if (ImGui::BunCheckbox("2006 Cursors", &config.old2006Cursors)) {
+        Config::saveConfig();
+
+        deleteDirectoryContents(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse");
+        std::filesystem::path src = config.old2006Cursors ? sinewave / "Assets" / "Cursors" / "2006" : sinewave / "Roblox" / "ContentBackup" / "textures" / "Cursors" / "KeyboardMouse";
+        copyDirectoryContents(src, std::filesystem::path(sinewave / "Roblox" / "content" / "textures" / "Cursors" / "KeyboardMouse"));
+    }
+
+    ImGui::Spacing();
+
+    if (ImGui::BunCheckbox("Old Oof Sound", &config.oofSound)) {
+        Config::saveConfig();
+
+        std::filesystem::path src = config.oofSound ? sinewave / "Assets" / "ouch.ogg" : sinewave / "Roblox" / "ContentBackup" / "sounds" / "ouch.ogg";
+        std::filesystem::remove(sinewave / "Roblox" / "content" / "sounds" / "ouch.ogg");
+        std::filesystem::copy_file(src, std::filesystem::path(sinewave / "Roblox" / "content" / "sounds" / "ouch.ogg"));
     }
 }

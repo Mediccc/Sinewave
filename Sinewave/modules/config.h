@@ -12,6 +12,7 @@ struct Settings {
 	bool debugMode;
 	bool serverRegion;
 	bool oldCursors;
+	bool old2006Cursors;
 	bool createShortcut;
 	bool oofSound;
 };
@@ -23,6 +24,7 @@ inline void to_json(json& j, const Settings& s) {
 		{"DebugMode", s.debugMode},
 		{"ServerRegion", s.serverRegion},
 		{"OldCursors", s.oldCursors},
+		{"Old2006Cursors", s.old2006Cursors},
 		{"CreateShortcut", s.createShortcut},
 		{"OofSound", s.oofSound}
 	};
@@ -34,6 +36,7 @@ inline void from_json(const json& j, Settings& s) {
 	j.at("DebugMode").get_to(s.debugMode);
 	j.at("ServerRegion").get_to(s.serverRegion);
 	j.at("OldCursors").get_to(s.oldCursors);
+	j.at("Old2006Cursors").get_to(s.old2006Cursors);
 	j.at("CreateShortcut").get_to(s.createShortcut);
 	j.at("OofSound").get_to(s.oofSound);
 }

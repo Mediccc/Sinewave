@@ -50,6 +50,17 @@ void updatePresence() {
     }
 }
 
+void copyDirectoryContents(const std::filesystem::path& from, const std::filesystem::path& to) {
+    for (const auto& entry : std::filesystem::directory_iterator(from)) {
+        const auto& src = entry.path();
+        const auto dest = to / src.filename();
+
+        if (entry.is_regular_file()) {
+            std::filesystem::copy_file(src, dest, std::filesystem::copy_options::overwrite_existing);
+        }
+    }
+}
+
 void deleteDirectoryContents(const std::filesystem::path& dir) {
     for (const auto& entry : std::filesystem::directory_iterator(dir))
         std::filesystem::remove_all(entry.path());

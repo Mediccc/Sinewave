@@ -139,6 +139,7 @@ xcopy /Y "$(ProjectDir)Roboto-Regular.ttf" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imgui\bun\bunui.cpp" />
     <ClCompile Include="include\ShortcutProvider.cpp" />
     <ClCompile Include="modules\config.cpp" />
     <ClCompile Include="include\d3d.cpp" />
@@ -168,6 +169,7 @@ xcopy /Y "$(ProjectDir)Roboto-Regular.ttf" "$(OutDir)"</Command>
     <Library Include="lib\libcurl_a.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\bun\bunui.h" />
     <ClInclude Include="include\ShortcutProvider.h" />
     <ClInclude Include="modules\config.h" />
     <ClInclude Include="modules\main\gui.h" />

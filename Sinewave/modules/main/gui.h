@@ -6,6 +6,7 @@
 #include "../modules/main/launcher.h"
 #include <d3d.h>
 #include "imgui_stdlib.h"
+#include "bun/bunui.h"
 #include "../config.h"
 
 void launchGUI();

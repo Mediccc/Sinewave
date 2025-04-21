@@ -87,6 +87,9 @@
     <ClCompile Include="include\ShortcutProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\bun\bunui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\libcurl_a.lib" />
@@ -201,6 +204,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ShortcutProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\bun\bunui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

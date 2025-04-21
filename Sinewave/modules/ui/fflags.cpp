@@ -68,10 +68,10 @@ std::string openFileDialog() {
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (SUCCEEDED(hr)) {
         IFileOpenDialog* pFileOpen;
-        
+
         /* create the FileOpenDialog object */
         hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-        
+
         if (SUCCEEDED(hr)) {
             /* show the Open dialog box */
             hr = pFileOpen->Show(NULL);
@@ -118,91 +118,55 @@ static void HelpMarker(const char* desc)
 }
 
 void initFflags() {
-    if (ImGui::BeginTabItem("FFlags")) {
-        ImGui::InputText("FFlag", &fflag);
-        ImGui::InputText("FFlag Value", &fflagValue);
+    ImGui::SetNextItemWidth(250);
+    ImGui::InputText("FFlag", &fflag);
+    ImGui::Spacing();
+    ImGui::SetNextItemWidth(250);
+    ImGui::InputText("FFlag Value", &fflagValue);
 
-        ImGui::Spacing();
+    ImGui::Spacing();
 
-        if (ImGui::Button("Add FFlag")) {
-            setFflag(fflag, fflagValue);
-            updateFFlags();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Remove FFlag")) {
-            removeFflag(fflag);
-            
-            for (auto it = flags.begin(); it != flags.end(); ++it) {
-                if (it->name == fflag) {
-                    flags.erase(it);
-                    break;
-                }
-            }
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Reset FFlag File")) {
-            std::ofstream ofs(fflags);
-            ofs << "{}";
-            ofs.close();
-
-            flags.clear();
-            updateFFlags();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Import File")) {
-            std::string selected = openFileDialog();
-
-            if (!selected.empty()) {
-                std::filesystem::path path = selected;
-                std::filesystem::remove_all(fflags);
-                std::filesystem::copy_file(path, fflags);
-                updateFFlags();
-            }
-        }
-
-        ImGui::SameLine();
-        HelpMarker("Replaces the FFlags JSON file with your own! (rename your JSON file to fflags.json)");
-
-        ImGui::Spacing();
-
-        if (ImGui::BeginTable("Flags", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchProp)) {
-            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableHeadersRow();
-
-            for (size_t i = 0; i < flags.size(); i++) {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::SetNextItemWidth(-1);
-                ImGui::InputText(("##name" + std::to_string(i)).c_str(), &flags[i].name);
-
-                ImGui::TableSetColumnIndex(1);
-                ImGui::SetNextItemWidth(-1);
-                ImGui::InputText(("##value" + std::to_string(i)).c_str(), &flags[i].value);
-                ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg0, IM_COL32(0, 0, 0, 0)); // No color
-            }
-
-            ImGui::EndTable();
-        }
-
-        if (ImGui::Button("Save Modified List")) {
-            json j;
-
-            for (auto flag : flags) {
-                j[flag.name] = flag.value;
-            }
-
-            std::ofstream ofs(fflags);
-            ofs << j.dump(4);
-            ofs.close();
-        }
-
-        ImGui::SameLine();
-        ImGui::Text("(you only need to click this if you modified the FFlag list)");
-
-        ImGui::EndTabItem();
+    if (Bun::Button("Add")) {
+        setFflag(fflag, fflagValue);
+        updateFFlags();
     }
+
+    ImGui::SameLine();
+
+    if (Bun::Button("Remove")) {
+        removeFflag(fflag);
+
+        for (auto it = flags.begin(); it != flags.end(); ++it) {
+            if (it->name == fflag) {
+                flags.erase(it);
+                break;
+            }
+        }
+    }
+
+    ImGui::SameLine();
+    if (Bun::Button("Import")) {
+        std::string selected = openFileDialog();
+
+        if (!selected.empty()) {
+            std::filesystem::path path = selected;
+            std::filesystem::remove_all(fflags);
+            std::filesystem::copy_file(path, fflags);
+            updateFFlags();
+        }
+    }
+
+    ImGui::Spacing();
+
+    if (Bun::Button("Reset File")) {
+        std::ofstream ofs(fflags);
+        ofs << "{}";
+        ofs.close();
+
+        flags.clear();
+        updateFFlags();
+    }
+
+    ImGui::Dummy(ImVec2(20, 20));
+    ImGui::Text("I recommend just importing a JSON file.");
 }

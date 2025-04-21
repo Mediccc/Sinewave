@@ -5,6 +5,7 @@
 #include <vector>
 #include "../misc.h"
 #include "imgui_stdlib.h"
+#include "bun/bunui.h"
 
 extern std::string fflag;
 extern std::string fflagValue;
