@@ -1,7 +1,5 @@
 # Sinewave - Roblox Launcher (and Bootstrapper)
 
-**I'm remaking the entire UI so the next update will take a while**
-
 **[Discord Server](https://discord.gg/mhTfWP3XxG)**
 
 Sinewave is a custom launcher (and Bootstrapper) for Roblox, designed to make your experience better.
