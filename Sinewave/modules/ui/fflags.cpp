@@ -152,6 +152,7 @@ void initFflags() {
             std::filesystem::path path = selected;
             std::filesystem::remove_all(fflags);
             std::filesystem::copy_file(path, fflags);
+            std::rename(selected.c_str(), "fflags.json"); /* i forgot to add this */
             updateFFlags();
         }
     }
