@@ -1,32 +1,5 @@
 #include "bootstrapper.h"
 
-static void setKey(HKEY hKey, const std::string& key, const std::string& valueName, const std::string& valueData) {
-	HKEY h = nullptr;
-
-	if (RegOpenKeyExA(hKey, key.c_str(), 0, KEY_SET_VALUE, &h) != ERROR_SUCCESS) {
-		Logger::log(Logger::ERR, "Could not open registry key " + key);
-		return;
-	}
-
-	LSTATUS status;
-	if (valueName.empty()) {
-		status = RegSetValueA(h, NULL, REG_SZ, valueData.c_str(), valueData.size() + 1);
-	}
-	else {
-		status = RegSetValueExA(h, valueName.c_str(), 0, REG_SZ, (const BYTE*)valueData.c_str(), valueData.size() + 1);
-	}
-
-	if (status != ERROR_SUCCESS) {
-		Logger::log(Logger::ERR, "Could not set registry key!");
-		return;
-	}
-	else {
-		Logger::log(Logger::SUCCESS, "Set registry key!");
-	}
-
-	RegCloseKey(h);
-}
-
 void Bootstrapper::initDirectories() {
 	char* appdata = std::getenv("APPDATA");
 	if (appdata) {
@@ -102,18 +75,7 @@ std::string Bootstrapper::init() {
 
 			system("taskkill /F /IM RobloxPlayerBeta.exe");
 
-			/* set registry values */
-			char exePath[MAX_PATH];
-			GetModuleFileNameA(NULL, exePath, MAX_PATH);
-			std::string pathh = exePath;
-
-			setKey(HKEY_CURRENT_USER, "Software\\ROBLOX Corporation\\Environments\\roblox-player", "clientExe", pathh);
-			setKey(HKEY_CURRENT_USER, "Software\\ROBLOX Corporation\\Environments\\roblox-player\\Capabilities", "ApplicationIcon", pathh);
-			setKey(HKEY_CLASSES_ROOT, "roblox\\DefaultIcon", "", pathh);
-			std::string launcherPath = "\"" + pathh + "\" \"%1\""; 
-			setKey(HKEY_CLASSES_ROOT, "roblox-player\\shell\\open\\command", "", launcherPath);
-			setKey(HKEY_CLASSES_ROOT, "roblox\\shell\\open\\command", "", launcherPath);
-			setKey(HKEY_CLASSES_ROOT, "roblox-player\\DefaultIcon", "", pathh);
+			setRobloxReg();
 
 			auto ixp = std::filesystem::path(std::filesystem::path(localAppdata) / "Roblox" / "ClientSettings" / "IxpSettings.json").string();
 			std::ofstream ofs(ixp);
@@ -152,6 +114,9 @@ std::string Bootstrapper::init() {
 				if (!SUCCEEDED(hr)) {
 					Logger::log(Logger::ERR, "Couldn't initialize the COM library!");
 				}
+
+				char exePath[MAX_PATH];
+				GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
 				wchar_t* desktopPath;
 				SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);

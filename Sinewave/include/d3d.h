@@ -5,6 +5,7 @@
 #include "imgui_impl_dx11.h"
 #include <d3d11.h>
 #include <tchar.h>
+#include <dwmapi.h>
 #include "bun/bunui.h"
 
 extern ID3D11Device* g_pd3dDevice;

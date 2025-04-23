@@ -11,4 +11,10 @@ void initSettings() {
     if (ImGui::BunCheckbox("Create desktop shortcut on install/update", &config.createShortcut)) {
         Config::saveConfig();
     }
+
+    ImGui::Spacing();
+
+    if (Bun::Button("Fix Registry")) {
+        setRobloxReg();
+    }
 }

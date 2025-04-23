@@ -145,6 +145,7 @@ void initFflags() {
     }
 
     ImGui::SameLine();
+
     if (Bun::Button("Import")) {
         std::string selected = openFileDialog();
 
@@ -168,6 +169,45 @@ void initFflags() {
         updateFFlags();
     }
 
-    ImGui::Dummy(ImVec2(20, 20));
-    ImGui::Text("I recommend just importing a JSON file.");
+    ImGui::SameLine();
+    
+    if (Bun::Button("Open File")) {
+        ShellExecute(0, L"open", fflags.c_str(), 0, 0, SW_SHOW);
+    }
+
+    ImGui::Spacing();
+
+    static bool showe;
+    ImGui::BunCheckbox("Show FFlag Presets Window", &showe);
+    if (showe) {
+        ImGui::SetNextWindowSize(ImVec2(300, 300));
+        ImGui::Begin("FFlag Presets", &showe, ImGuiWindowFlags_NoResize);
+        Bun::DarkTheme();
+
+        /* colors */
+        ImGuiStyle& style = ImGui::GetStyle();
+        ImVec4 background = style.Colors[ImGuiCol_Button];
+
+        /* drawing */
+        ImDrawList* list = ImGui::GetWindowDrawList();
+        ImVec2 pos = ImGui::GetCursorScreenPos();
+        ImVec2 size(284, 258);
+
+        list->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), ImGui::ColorConvertFloat4ToU32(background), 2.0f);
+        if (Bun::NavigationButton("Disable Roblox Telemetry", ImVec2(264, 35))) {
+            std::vector<std::string> telemetry = {"FFlagDebugDisableTelemetryEphemeralCounter", "FFlagDebugDisableTelemetryEphemeralStat", "FFlagDebugDisableTelemetryEventIngest", "FFlagDebugDisableTelemetryPoint", "FFlagDebugDisableTelemetryV2Counter", "FFlagDebugDisableTelemetryV2Event", "FFlagDebugDisableTelemetryV2Stat"};
+            for (auto flag : telemetry) {
+                setFflag(flag, "True");
+                updateFFlags();
+            }
+        };
+
+        ImGui::Spacing();
+
+        if (Bun::NavigationButton("Disable Player Shadows", ImVec2(264, 35))) {
+            setFflag("FIntRenderShadowIntensity", "0");
+            updateFFlags();
+        }
+        ImGui::End();
+    }
 }

@@ -2,7 +2,7 @@
 
 void Bun::DarkTheme() {
     ImGuiStyle& style = ImGui::GetStyle();
-    //style.WindowRounding = 7.0f;
+    style.WindowRounding = 4.0f;
     style.FrameRounding = 4.0f;
 
     style.Colors[ImGuiCol_Button] = ImVec4(0.196f, 0.196f, 0.196f, 0.400f);

@@ -65,7 +65,7 @@ void launchGUI() {
     GUI::loadStyle();
     updateFFlags();
 
-    // Main loop
+
     bool done = false;
     while (!done)
     {
@@ -95,7 +95,6 @@ void launchGUI() {
             CreateRenderTarget();
         }
 
-        // Start the Dear ImGui frame
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
@@ -103,11 +102,10 @@ void launchGUI() {
         static bool show = true;
 
         if (show) {
-            ImGui::SetNextWindowPos({ 0, 0 });
             ImGui::SetNextWindowSize({ 650, 400 });
 
-            ImGui::Begin("Sinewave | v1.0.2", &show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-            
+            ImGui::Begin("Sinewave | v1.0.3", &show, ImGuiWindowFlags_NoResize);
+
             NavigationExample();
 
             ImGui::End();

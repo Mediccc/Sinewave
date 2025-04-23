@@ -3,7 +3,6 @@
 HWND GUI::hwnd = nullptr;
 WNDCLASSEXW GUI::wc = {};
 
-// Global variables
 ID3D11Device* g_pd3dDevice = nullptr;
 ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
 IDXGISwapChain* g_pSwapChain = nullptr;
@@ -13,7 +12,6 @@ ID3D11RenderTargetView* g_mainRenderTargetView = nullptr;
 
 bool CreateDeviceD3D(HWND hWnd)
 {
-    // Setup swap chain
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
     sd.BufferCount = 2;
@@ -35,7 +33,7 @@ bool CreateDeviceD3D(HWND hWnd)
     const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 };
     HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
     if (res == DXGI_ERROR_UNSUPPORTED)
-        res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
+        res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
     if (res != S_OK)
         return false;
 
@@ -64,10 +62,8 @@ void CleanupRenderTarget()
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
 
-// Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// Win32 message handler
 static POINTS lastPos;
 static bool dragging = false;
 
@@ -79,9 +75,10 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg)
     {
     case WM_LBUTTONDOWN:
-        lastPos = MAKEPOINTS(lParam);
-        dragging = true;
+        //lastPos = MAKEPOINTS(lParam);
+       // dragging = true;
         return 0;
+    /*
     case WM_MOUSEMOVE:
         if (dragging)
         {
@@ -94,18 +91,18 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             SetWindowPos(hWnd, nullptr, windowRect.left + dx, windowRect.top + dy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         }
-        return 0;
+        return 0;*/
     case WM_LBUTTONUP:
         dragging = false;
         return 0;
     case WM_SIZE:
         if (wParam == SIZE_MINIMIZED)
             return 0;
-        g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
+        g_ResizeWidth = (UINT)LOWORD(lParam);
         g_ResizeHeight = (UINT)HIWORD(lParam);
         return 0;
     case WM_SYSCOMMAND:
-        if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+        if ((wParam & 0xfff0) == SC_KEYMENU)
             return 0;
         break;
     case WM_DESTROY:
@@ -119,11 +116,34 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void GUI::initWindow() {
     ImGui_ImplWin32_EnableDpiAwareness();
-    wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
+    wc = { sizeof(wc), CS_HREDRAW | CS_VREDRAW, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
-    hwnd = ::CreateWindowExW(WS_EX_TRANSPARENT, wc.lpszClassName, L"Sinewave", WS_POPUP, 100, 100, 650, 400, nullptr, nullptr, wc.hInstance, nullptr);
+    hwnd = ::CreateWindowExW(WS_EX_LAYERED, wc.lpszClassName, L"Sinewave", WS_POPUP, 0, 0, 1920, 1080, nullptr, nullptr, wc.hInstance, nullptr);
 
-    // Initialize Direct3D
+    /* https://www.youtube.com/watch?v=aY8MNCNN-cY */
+    /* thanks */
+    /* the reason i added this is because of sum annoying rounded corners issue */
+    SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 255, LWA_COLORKEY);
+    {
+        RECT client_area{};
+        GetClientRect(hwnd, &client_area);
+
+        RECT window_area{};
+        GetWindowRect(hwnd, &window_area);
+
+        POINT diff{};
+        ClientToScreen(hwnd, &diff);
+
+        const MARGINS margins{
+            window_area.left + (diff.x - window_area.left),
+            window_area.top + (diff.y - window_area.top),
+            client_area.right,
+            client_area.bottom
+        };
+
+        DwmExtendFrameIntoClientArea(hwnd, &margins);
+    }
+
     if (!CreateDeviceD3D(hwnd))
     {
         CleanupDeviceD3D();
@@ -131,21 +151,17 @@ void GUI::initWindow() {
         return;
     }
 
-    // Show the window
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);
     ::UpdateWindow(hwnd);
 
-    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
-    // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 }
@@ -153,12 +169,13 @@ void GUI::initWindow() {
 void GUI::render() {
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     ImGui::Render();
+    constexpr float color[4]{ 0.f, 0.f, 0.f, 0.f };
     const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
     g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
-    g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
+    g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, color);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    HRESULT hr = g_pSwapChain->Present(1, 0);   // Present with vsync
+    HRESULT hr = g_pSwapChain->Present(1, 0);
     g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
 }
 

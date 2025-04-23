@@ -4,6 +4,20 @@
 #include "modules/main/launcher.h"
 #include "modules/config.h"
 
+/*
+
+todo:
+    - probably make a custom ImGui widget for a table/list
+    - I would just use an ImGui table but I don't like the look of them + they get out of my frames
+    - fflag presets
+    - better fflag editor
+    - better discord rpc (allowing game developers to change things like game name etc for the rpc)
+    - channel switcher
+    - option to cancel updates
+    - i wanna make a forcefield color switcher i just like the idea of it
+
+*/
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetConsoleTitleA("Sinewave");
