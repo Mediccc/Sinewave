@@ -5,27 +5,31 @@ std::string fflag;
 std::string fflagValue;
 
 void setFflag(const std::string& fflag, const std::string& value) {
-    json j;
-    std::ifstream ifs(fflags);
-    ifs >> j;
-    ifs.close();
+    if (std::filesystem::exists(fflags)) {
+        json j;
+        std::ifstream ifs(fflags);
+        ifs >> j;
+        ifs.close();
 
-    j[fflag] = value;
-    std::ofstream ofs(fflags);
-    ofs << j.dump(4);
-    ofs.close();
+        j[fflag] = value;
+        std::ofstream ofs(fflags);
+        ofs << j.dump(4);
+        ofs.close();
+    }
 }
 
 void removeFflag(const std::string& fflag) {
-    json j;
-    std::ifstream ifs(fflags);
-    ifs >> j;
-    ifs.close();
+    if (std::filesystem::exists(fflags)) {
+        json j;
+        std::ifstream ifs(fflags);
+        ifs >> j;
+        ifs.close();
 
-    j.erase(fflag);
-    std::ofstream ofs(fflags);
-    ofs << j.dump(4);
-    ofs.close();
+        j.erase(fflag);
+        std::ofstream ofs(fflags);
+        ofs << j.dump(4);
+        ofs.close();
+    }
 }
 
 void updateFFlags() {
@@ -117,6 +121,10 @@ static void HelpMarker(const char* desc)
     }
 }
 
+std::filesystem::path file;
+std::set<std::filesystem::path> customPresets; /* we use std::set for alphabetical order */
+std::string currentPreset;
+
 void initFflags() {
     ImGui::SetNextItemWidth(250);
     ImGui::InputText("FFlag", &fflag);
@@ -150,9 +158,9 @@ void initFflags() {
         std::string selected = openFileDialog();
 
         if (!selected.empty()) {
-            std::filesystem::path path = selected;
+            file = selected;
             std::filesystem::remove_all(fflags);
-            std::filesystem::copy_file(path, fflags);
+            std::filesystem::copy_file(file, fflags);
             std::rename(selected.c_str(), "fflags.json"); /* i forgot to add this */
             updateFFlags();
         }
@@ -175,10 +183,34 @@ void initFflags() {
         ShellExecute(0, L"open", fflags.c_str(), 0, 0, SW_SHOW);
     }
 
+    ImGui::SameLine();
+
+    if (Bun::Button("Create Preset")) {
+        if (file.empty()) {
+            MessageBoxA(NULL, "No JSON file selected!", "Sinewave", MB_OK | MB_ICONINFORMATION);
+            Logger::log(Logger::ERR, "No JSON file selected! Can't create preset.");
+        }
+        else {
+            std::filesystem::path target = sinewave / "Settings" / "Presets" / file.filename();
+
+            if (std::filesystem::exists(target)) {
+                MessageBoxA(NULL, "This preset already exists!", "Sinewave", MB_OK | MB_ICONINFORMATION);
+                Logger::log(Logger::ERR, "This custom preset already exists! Failed to copy file.");
+            }
+            else {
+                std::filesystem::copy_file(file, target);
+                Logger::log(Logger::SUCCESS, "Created custom preset!");
+            }
+        }
+    }
+
     ImGui::Spacing();
 
     static bool showe;
     ImGui::BunCheckbox("Show FFlag Presets Window", &showe);
+
+    /* hmm.. i really wonder if the gui won't get messed up on higher resolutions (considering I'm using hardcoded ImVec2 values) */
+    /* todo: maybe implement something to prevent that? */
     if (showe) {
         ImGui::SetNextWindowSize(ImVec2(300, 300));
         ImGui::Begin("FFlag Presets", &showe, ImGuiWindowFlags_NoResize);
@@ -210,4 +242,54 @@ void initFflags() {
         }
         ImGui::End();
     }
+
+    ImGui::Spacing();
+
+    static bool showc;
+    ImGui::BunCheckbox("Show Custom FFlag Presets Window", &showc);
+    if (showc) {
+        ImGui::SetNextWindowSize(ImVec2(300, 300));
+        ImGui::Begin("Custom FFlag Presets", &showc, ImGuiWindowFlags_NoResize);
+        Bun::DarkTheme();
+
+        /* colors */
+        ImGuiStyle& style = ImGui::GetStyle();
+        ImVec4 background = style.Colors[ImGuiCol_Button];
+
+        /* drawing */
+        ImDrawList* list = ImGui::GetWindowDrawList();
+        ImVec2 pos = ImGui::GetCursorScreenPos();
+        ImVec2 size(284, 258);
+
+        list->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), ImGui::ColorConvertFloat4ToU32(background), 2.0f);
+
+        /* custom presets */
+        ImGui::BeginChild("custompresets", ImVec2(size.x - 10, size.y - 10), false, ImGuiWindowFlags_NoScrollbar);
+
+        /* list the custom presets in alphabetical order */
+        for (const auto& entry : std::filesystem::directory_iterator(sinewave / "Settings" / "Presets")) {
+            customPresets.insert(entry.path());
+        }
+
+        for (const auto& preset : customPresets) {
+            std::string name = preset.stem().string();
+            if (Bun::NavigationButton(name.c_str(), ImVec2(264, 35))) {
+                currentPreset = name;
+
+                /* we copy the file and replace */
+                std::filesystem::remove_all(fflags);
+                std::filesystem::copy_file(preset, fflags);
+                std::rename(preset.filename().string().c_str(), "fflags.json");
+
+                Logger::log(Logger::SUCCESS, "Using preset " + name);
+            }
+            ImGui::Spacing();
+        }
+
+        ImGui::EndChild();
+        ImGui::End();
+    }
+
+    ImGui::Dummy(ImVec2(8, 8));
+    ImGui::Text(("Currently using preset: " + currentPreset).c_str());
 }

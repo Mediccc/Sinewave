@@ -8,6 +8,7 @@ void Bootstrapper::initDirectories() {
 			std::filesystem::create_directory(path);
 			std::filesystem::create_directory(path / "Roblox");
 			std::filesystem::create_directory(path / "Settings");
+			std::filesystem::create_directory(path / "Settings" / "Presets");
 			std::filesystem::create_directory(path / "Assets");
 			std::filesystem::create_directory(path / "Assets" / "Cursors");
 			std::filesystem::create_directory(path / "Assets" / "Cursors" / "2014");
@@ -34,6 +35,13 @@ void Bootstrapper::initDirectories() {
 		}
 	}
 }
+
+/*
+
+todo:
+	- implement a channel switcher
+
+*/
 
 std::string Bootstrapper::init() {
 	/* get the latest client version */

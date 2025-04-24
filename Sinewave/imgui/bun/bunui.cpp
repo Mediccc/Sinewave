@@ -113,8 +113,8 @@ void Bun::NavigationPage(const char* name, const ImVec2& size, std::function<voi
 
     list->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), ImGui::ColorConvertFloat4ToU32(background), 2.0f);
     ImGui::SetCursorScreenPos(ImVec2(pos.x + 10, pos.y + 10));
-    ImGui::BeginGroup();
+    ImGui::BeginChild("scroll", ImVec2(size.x - 20, size.y - 20), false, ImGuiWindowFlags_NoScrollbar);
     fn();
-    ImGui::EndGroup();
+    ImGui::EndChild();
     ImGui::PopID();
 }

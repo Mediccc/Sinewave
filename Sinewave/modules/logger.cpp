@@ -13,5 +13,6 @@ void Logger::log(type t, const std::string& message) {
 	case Logger::type::ERR:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		std::cout << "[SINEWAVE]: " << message << "\n";
+		break;
 	}
 }

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <imgui.h>
 #include <vector>
+#include <set>
 #include "../misc.h"
 #include "imgui_stdlib.h"
 #include "bun/bunui.h"
