@@ -107,3 +107,27 @@ void setRobloxReg() {
     setKey(HKEY_CLASSES_ROOT, "roblox\\shell\\open\\command", "", launcherPath);
     setKey(HKEY_CLASSES_ROOT, "roblox-player\\DefaultIcon", "", pathh);
 }
+
+/* this is better than using system */
+bool terminateProcess(const wchar_t* processName) {
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snapshot == INVALID_HANDLE_VALUE)
+        return false;
+
+    PROCESSENTRY32W entry{ sizeof(entry) };
+    bool terminated = false;
+
+    for (BOOL ok = Process32FirstW(snapshot, &entry); ok; ok = Process32NextW(snapshot, &entry)) {
+        if (_wcsicmp(entry.szExeFile, processName) == 0) {
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, entry.th32ProcessID);
+            if (hProcess) {
+                if (TerminateProcess(hProcess, 0))
+                    terminated = true;
+                CloseHandle(hProcess);
+            }
+        }
+    }
+
+    CloseHandle(snapshot);
+    return terminated;
+}

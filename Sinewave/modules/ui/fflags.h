@@ -11,6 +11,7 @@
 extern std::string fflag;
 extern std::string fflagValue;
 
+void checkFFlags();
 void setFflag(const std::string& fflag, const std::string& value);
 
 struct FFlag {
@@ -19,7 +20,5 @@ struct FFlag {
 };
 
 extern std::vector<FFlag> flags;
-
-void updateFFlags();
 
 void initFflags();

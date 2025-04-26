@@ -36,33 +36,25 @@ void Bootstrapper::initDirectories() {
 	}
 }
 
-/*
-
-todo:
-	- implement a channel switcher
-
-*/
-
 std::string Bootstrapper::init() {
 	/* get the latest client version */
 	HttpResponse version = Http::newRequest("https://clientsettingscdn.roblox.com/v1/client-version/WindowsPlayer", "GET");
 	json j = json::parse(version.content);
 	
 	/* install Roblox */
-	char* appdata = std::getenv("APPDATA");
-	char* localAppdata = std::getenv("LOCALAPPDATA");
-	auto path = std::filesystem::path(appdata) / "Sinewave";
 	std::string currentVersion = j["clientVersionUpload"].get<std::string>();
 
-	if (!std::filesystem::exists(std::filesystem::path(localAppdata) / "Roblox" / "Versions" / currentVersion) || !std::filesystem::exists(sinewave)) {
+	if (!std::filesystem::exists(robloxp /  "Versions" / currentVersion) || !std::filesystem::exists(sinewave)) {
 		if (!std::filesystem::exists(sinewave)) {
 			Bootstrapper::initDirectories();
 		}
+
 		AllocConsole();
+		SetConsoleTitleA("Sinewave Bootstrapper");
 		freopen("CONOUT$", "w", stdout);
 		Logger::log(Logger::INFO, "Fetched latest Roblox version! Installing update..");
 
-		auto filePath = std::filesystem::path(path / "Roblox" / "RobloxPlayerInstaller.exe");
+		auto filePath = std::filesystem::path(sinewave / "Roblox" / "RobloxPlayerInstaller.exe");
 		Http::downloadFile("https://setup.rbxcdn.com/" + currentVersion + "-RobloxPlayerInstaller.exe", filePath.string());
 
 		STARTUPINFO si;
@@ -81,16 +73,17 @@ std::string Bootstrapper::init() {
 			CloseHandle(pi.hProcess);
 			CloseHandle(pi.hThread);
 
-			system("taskkill /F /IM RobloxPlayerBeta.exe");
+			/* kill the Roblox process */
+			terminateProcess(L"RobloxPlayerBeta.exe");
 
+			/* set the registry */
 			setRobloxReg();
 
-			auto ixp = std::filesystem::path(std::filesystem::path(localAppdata) / "Roblox" / "ClientSettings" / "IxpSettings.json").string();
+			/* overwrite Roblox's fflag file */
+			auto ixp = std::filesystem::path(robloxp / "ClientSettings" / "IxpSettings.json").string();
 			std::ofstream ofs(ixp);
 			ofs << "{}";
 			ofs.close();
-
-			/* todo: make this look better */
 
 			auto destination = std::filesystem::path(sinewave / "Roblox" / "content");
 			if (!std::filesystem::exists(destination)) {
@@ -127,24 +120,27 @@ std::string Bootstrapper::init() {
 				GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
 				wchar_t* desktopPath;
-				SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);
+				hr = SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);
 
-				std::filesystem::path desktop = desktopPath;
-				std::filesystem::path shortcutPath = desktop / L"Sinewave.lnk";
-				HRESULT result = CreateLink(
-					std::filesystem::path(exePath).c_str(),
-					shortcutPath.string().c_str(),
-					L"Sinewave"
-				);
+				if (SUCCEEDED(hr)) {
+					std::filesystem::path desktop(desktopPath);
+					std::filesystem::path shortcutPath = desktop / L"Sinewave.lnk";
+					hr = CreateLink(
+						std::filesystem::path(exePath).c_str(),
+						shortcutPath.string().c_str(),
+						L"Sinewave"
+					);
 
-				if (!SUCCEEDED(result)) {
-					Logger::log(Logger::ERR, "Couldn't create shortcut!");
+					if (!SUCCEEDED(hr)) {
+						Logger::log(Logger::ERR, "Couldn't create shortcut!");
+					}
+
+					CoTaskMemFree(desktopPath);
 				}
 			}
-
-			MessageBoxA(NULL, "Finished installing Sinewave!", "Sinewave", MB_OK | MB_ICONINFORMATION);
-
+			fclose(stdout);
 			FreeConsole();
+			MessageBoxA(NULL, "Please restart Sinewave!", "Sinewave", MB_OK | MB_ICONINFORMATION);
 			ExitProcess(0);
 		}
 	}

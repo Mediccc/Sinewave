@@ -4,65 +4,36 @@ std::vector<FFlag> flags;
 std::string fflag;
 std::string fflagValue;
 
-void setFflag(const std::string& fflag, const std::string& value) {
-    if (std::filesystem::exists(fflags)) {
-        json j;
-        std::ifstream ifs(fflags);
-        ifs >> j;
-        ifs.close();
-
-        j[fflag] = value;
+void checkFFlags() {
+    if (!std::filesystem::exists(fflags)) {
         std::ofstream ofs(fflags);
-        ofs << j.dump(4);
+        ofs << "{}";
         ofs.close();
     }
+}
+
+void setFflag(const std::string& fflag, const std::string& value) {
+    json j;
+    std::ifstream ifs(fflags);
+    ifs >> j;
+    ifs.close();
+
+    j[fflag] = value;
+    std::ofstream ofs(fflags);
+    ofs << j.dump(4);
+    ofs.close();
 }
 
 void removeFflag(const std::string& fflag) {
-    if (std::filesystem::exists(fflags)) {
-        json j;
-        std::ifstream ifs(fflags);
-        ifs >> j;
-        ifs.close();
-
-        j.erase(fflag);
-        std::ofstream ofs(fflags);
-        ofs << j.dump(4);
-        ofs.close();
-    }
-}
-
-void updateFFlags() {
+    json j;
     std::ifstream ifs(fflags);
+    ifs >> j;
+    ifs.close();
 
-    json j = json::parse(ifs);
-    for (auto& [key, value] : j.items()) {
-        bool exists = false;
-        for (const auto& flag : flags) {
-            if (flag.name == key) {
-                exists = true;
-                break;
-            }
-        }
-
-        if (!exists) {
-            if (value.is_string()) {
-                flags.push_back(FFlag{ key, value.get<std::string>() });
-            }
-            else if (value.is_number_integer()) {
-                flags.push_back(FFlag{ key, std::to_string(value.get<int>()) });
-            }
-            else if (value.is_number_float()) {
-                flags.push_back(FFlag{ key, std::to_string(value.get<float>()) });
-            }
-            else if (value.is_boolean()) {
-                flags.push_back(FFlag{ key, value.get<bool>() ? "true" : "false" });
-            }
-            else {
-                flags.push_back(FFlag{ key, "Unsupported value type" });
-            }
-        }
-    }
+    j.erase(fflag);
+    std::ofstream ofs(fflags);
+    ofs << j.dump(4);
+    ofs.close();
 }
 
 std::string openFileDialog() {
@@ -109,18 +80,6 @@ std::string openFileDialog() {
     return path;
 }
 
-static void HelpMarker(const char* desc)
-{
-    ImGui::TextDisabled("(?)");
-    if (ImGui::BeginItemTooltip())
-    {
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
-
 std::filesystem::path file;
 std::set<std::filesystem::path> customPresets; /* we use std::set for alphabetical order */
 std::string currentPreset;
@@ -136,7 +95,6 @@ void initFflags() {
 
     if (Bun::Button("Add")) {
         setFflag(fflag, fflagValue);
-        updateFFlags();
     }
 
     ImGui::SameLine();
@@ -144,12 +102,13 @@ void initFflags() {
     if (Bun::Button("Remove")) {
         removeFflag(fflag);
 
+        /*
         for (auto it = flags.begin(); it != flags.end(); ++it) {
             if (it->name == fflag) {
                 flags.erase(it);
                 break;
             }
-        }
+        }*/
     }
 
     ImGui::SameLine();
@@ -162,7 +121,6 @@ void initFflags() {
             std::filesystem::remove_all(fflags);
             std::filesystem::copy_file(file, fflags);
             std::rename(selected.c_str(), "fflags.json"); /* i forgot to add this */
-            updateFFlags();
         }
     }
 
@@ -174,7 +132,6 @@ void initFflags() {
         ofs.close();
 
         flags.clear();
-        updateFFlags();
     }
 
     ImGui::SameLine();
@@ -230,7 +187,6 @@ void initFflags() {
             std::vector<std::string> telemetry = {"FFlagDebugDisableTelemetryEphemeralCounter", "FFlagDebugDisableTelemetryEphemeralStat", "FFlagDebugDisableTelemetryEventIngest", "FFlagDebugDisableTelemetryPoint", "FFlagDebugDisableTelemetryV2Counter", "FFlagDebugDisableTelemetryV2Event", "FFlagDebugDisableTelemetryV2Stat"};
             for (auto flag : telemetry) {
                 setFflag(flag, "True");
-                updateFFlags();
             }
         };
 
@@ -238,7 +194,6 @@ void initFflags() {
 
         if (Bun::NavigationButton("Disable Player Shadows", ImVec2(264, 35))) {
             setFflag("FIntRenderShadowIntensity", "0");
-            updateFFlags();
         }
         ImGui::End();
     }

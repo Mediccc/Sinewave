@@ -8,6 +8,7 @@
 #include <thread>
 #include <mutex>
 #include <nlohmann/json.hpp>
+#include <TlHelp32.h>
 #include "logger.h"
 #include "http.h"
 #include "watcher.h"
@@ -94,3 +95,4 @@ void deleteDirectoryContents(const std::filesystem::path& dir);
 
 void setKey(HKEY hKey, const std::string& key, const std::string& valueName, const std::string& valueData);
 void setRobloxReg();
+bool terminateProcess(const wchar_t* processName);

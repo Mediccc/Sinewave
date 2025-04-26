@@ -63,8 +63,6 @@ void NavigationExample() {
 void launchGUI() {
     GUI::initWindow();
     GUI::loadStyle();
-    updateFFlags();
-
 
     bool done = false;
     while (!done)
@@ -104,7 +102,7 @@ void launchGUI() {
         if (show) {
             ImGui::SetNextWindowSize({ 650, 400 });
 
-            ImGui::Begin("Sinewave | v1.0.4", &show, ImGuiWindowFlags_NoResize);
+            ImGui::Begin("Sinewave | v1.0.5", &show, ImGuiWindowFlags_NoResize);
 
             NavigationExample();
 

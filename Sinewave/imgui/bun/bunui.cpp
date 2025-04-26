@@ -13,6 +13,7 @@ void Bun::DarkTheme() {
     style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.273f, 0.274f, 0.275f, 1.000f);
     style.Colors[ImGuiCol_CheckMark] = ImVec4(0.803f, 0.833f, 0.869f, 1.000f);
     style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.137f, 0.137f, 0.137f, 1.000f);
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.196f, 0.196f, 0.196f, 1.0f);
 
 }
 
