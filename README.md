@@ -7,7 +7,7 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 
 # Features
 
-* **FFlag Editor** with custom presets
+* **FFlag Editor** with custom presets.
 * **Appearance/Customization Mods** such as the old oof sounds, custom cursors, etc.
 * **Discord RPC** so your  Discord friends can see what you're playing!
 
