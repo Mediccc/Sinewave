@@ -13,6 +13,7 @@ void checkFFlags() {
 }
 
 void setFflag(const std::string& fflag, const std::string& value) {
+    checkFFlags();
     json j;
     std::ifstream ifs(fflags);
     ifs >> j;
@@ -25,6 +26,7 @@ void setFflag(const std::string& fflag, const std::string& value) {
 }
 
 void removeFflag(const std::string& fflag) {
+    checkFFlags();
     json j;
     std::ifstream ifs(fflags);
     ifs >> j;
@@ -101,14 +103,6 @@ void initFflags() {
 
     if (Bun::Button("Remove")) {
         removeFflag(fflag);
-
-        /*
-        for (auto it = flags.begin(); it != flags.end(); ++it) {
-            if (it->name == fflag) {
-                flags.erase(it);
-                break;
-            }
-        }*/
     }
 
     ImGui::SameLine();
@@ -120,7 +114,6 @@ void initFflags() {
             file = selected;
             std::filesystem::remove_all(fflags);
             std::filesystem::copy_file(file, fflags);
-            std::rename(selected.c_str(), "fflags.json"); /* i forgot to add this */
         }
     }
 
@@ -234,7 +227,6 @@ void initFflags() {
                 /* we copy the file and replace */
                 std::filesystem::remove_all(fflags);
                 std::filesystem::copy_file(preset, fflags);
-                std::rename(preset.filename().string().c_str(), "fflags.json");
 
                 Logger::log(Logger::SUCCESS, "Using preset " + name);
             }
