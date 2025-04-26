@@ -7,7 +7,7 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 
 # Features
 
-* **FFlag Editor** that's simple (still needs some tweaks)
+* **FFlag Editor** with custom presets
 * **Appearance/Customization Mods** such as the old oof sounds, custom cursors, etc.
 * **Discord RPC** so your  Discord friends can see what you're playing!
 
@@ -19,11 +19,7 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 # Usage
 For Sinewave to work correctly, please start games from the **Roblox website**.
 
-If you want to uninstall Sinewave:
-* Delete the folder Sinewave is installed in.
-* Delete the Sinewave folder from **%appdata%**.
-* Run the **Roblox** installer
-
+If you encounter any errors, please join the Discord server and report them.
 # Building From Source
 If you want to build Sinewave yourself, here's how:
 1. **Clone the Sinewave repository**
