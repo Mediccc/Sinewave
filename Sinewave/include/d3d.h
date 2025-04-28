@@ -26,7 +26,7 @@ public:
     static HWND hwnd;
     static WNDCLASSEXW wc;
 
-    static void initWindow();
+    static void initWindow(bool topmost);
     static void render();
     static void loadStyle();
     static void cleanup();

@@ -10,6 +10,23 @@ std::atomic<bool> discordUpdate(true);
 std::mutex discord;
 DiscordRichPresence discordPresence;
 
+void checkVersion() {
+    HttpResponse response = Http::newRequest("https://raw.githubusercontent.com/Mediccc/Sinewave/refs/heads/master/Sinewave/version.json", "GET");
+    json j = json::parse(response.content);
+    std::string version = j["version"].get<std::string>();
+
+    std::ifstream ifs("version.json");
+    json f = json::parse(ifs);
+    std::string current = f["version"].get<std::string>();
+
+    if (version != current) {
+        int box = MessageBoxA(NULL, "It looks like you're using an outdated version of Sinewave.\nWould you like to install the new version?", "Sinewave", MB_YESNO | MB_ICONQUESTION);
+        if (box == IDYES) {
+            ShellExecute(0, 0, L"https://github.com/Mediccc/Sinewave/releases", 0, 0, SW_SHOW);
+        }
+    }
+}
+
 void sendNotification(const std::wstring& title, const std::wstring& subtitle) {
     if (!WinToast::isCompatible()) {
         std::wcerr << L"Error, your system is not supported!" << std::endl;

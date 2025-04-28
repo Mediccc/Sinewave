@@ -19,6 +19,8 @@ void Bootstrapper::initDirectories() {
 			if (ofs.is_open()) {
 				config.discordRPC = true;
 				config.createShortcut = true;
+				config.freezeKeybind = -1;
+				config.theme = "Default";
 				json j = config;
 
 				ofs << j;

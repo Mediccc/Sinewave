@@ -87,90 +87,118 @@ std::set<std::filesystem::path> customPresets; /* we use std::set for alphabetic
 std::string currentPreset;
 
 void initFflags() {
-    ImGui::SetNextItemWidth(250);
-    ImGui::InputText("FFlag", &fflag);
-    ImGui::Spacing();
-    ImGui::SetNextItemWidth(250);
-    ImGui::InputText("FFlag Value", &fflagValue);
+    Bun::Section("FFlags", ImVec2(455, 167), []() {
+        ImGui::SetNextItemWidth(250);
+        ImGui::InputText("FFlag", &fflag);
+        ImGui::Spacing();
+        ImGui::SetNextItemWidth(250);
+        ImGui::InputText("FFlag Value", &fflagValue);
 
-    ImGui::Spacing();
+        ImGui::Spacing();
 
-    if (Bun::Button("Add")) {
-        setFflag(fflag, fflagValue);
-    }
-
-    ImGui::SameLine();
-
-    if (Bun::Button("Remove")) {
-        removeFflag(fflag);
-    }
-
-    ImGui::SameLine();
-
-    if (Bun::Button("Import")) {
-        std::string selected = openFileDialog();
-
-        if (!selected.empty()) {
-            file = selected;
-            std::filesystem::remove_all(fflags);
-            std::filesystem::copy_file(file, fflags);
+        if (Bun::Button("Add")) {
+            setFflag(fflag, fflagValue);
         }
-    }
 
-    ImGui::Spacing();
+        ImGui::SameLine();
 
-    if (Bun::Button("Reset File")) {
-        std::ofstream ofs(fflags);
-        ofs << "{}";
-        ofs.close();
-
-        flags.clear();
-    }
-
-    ImGui::SameLine();
-    
-    if (Bun::Button("Open File")) {
-        ShellExecute(0, L"open", fflags.c_str(), 0, 0, SW_SHOW);
-    }
-
-    ImGui::SameLine();
-
-    if (Bun::Button("Create Preset")) {
-        if (file.empty()) {
-            MessageBoxA(NULL, "No JSON file selected!", "Sinewave", MB_OK | MB_ICONINFORMATION);
-            Logger::log(Logger::ERR, "No JSON file selected! Can't create preset.");
+        if (Bun::Button("Remove")) {
+            removeFflag(fflag);
         }
-        else {
-            std::filesystem::path target = sinewave / "Settings" / "Presets" / file.filename();
 
-            if (std::filesystem::exists(target)) {
-                MessageBoxA(NULL, "This preset already exists!", "Sinewave", MB_OK | MB_ICONINFORMATION);
-                Logger::log(Logger::ERR, "This custom preset already exists! Failed to copy file.");
+        ImGui::SameLine();
+
+        if (Bun::Button("Import")) {
+            std::string selected = openFileDialog();
+
+            if (!selected.empty()) {
+                file = selected;
+                std::filesystem::remove_all(fflags);
+                std::filesystem::copy_file(file, fflags);
+            }
+        }
+
+        ImGui::Spacing();
+
+        if (Bun::Button("Reset File")) {
+            std::ofstream ofs(fflags);
+            ofs << "{}";
+            ofs.close();
+
+            flags.clear();
+        }
+
+        ImGui::SameLine();
+
+        if (Bun::Button("Open File")) {
+            ShellExecute(0, L"open", fflags.c_str(), 0, 0, SW_SHOW);
+        }
+
+        ImGui::SameLine();
+
+        if (Bun::Button("Create Preset")) {
+            if (file.empty()) {
+                MessageBoxA(NULL, "No JSON file selected!", "Sinewave", MB_OK | MB_ICONINFORMATION);
+                Logger::log(Logger::ERR, "No JSON file selected! Can't create preset.");
             }
             else {
-                std::filesystem::copy_file(file, target);
-                Logger::log(Logger::SUCCESS, "Created custom preset!");
+                std::filesystem::path target = sinewave / "Settings" / "Presets" / file.filename();
+
+                if (std::filesystem::exists(target)) {
+                    MessageBoxA(NULL, "This preset already exists!", "Sinewave", MB_OK | MB_ICONINFORMATION);
+                    Logger::log(Logger::ERR, "This custom preset already exists! Failed to copy file.");
+                }
+                else {
+                    std::filesystem::copy_file(file, target);
+                    Logger::log(Logger::SUCCESS, "Created custom preset!");
+                }
             }
         }
-    }
+    }, "FFlags");
 
-    ImGui::Spacing();
+    ImGui::Dummy(ImVec2(18, 18));
 
-    static bool showe;
-    ImGui::BunCheckbox("Show FFlag Presets Window", &showe);
+    static bool showc;
 
-    /* hmm.. i really wonder if the gui won't get messed up on higher resolutions (considering I'm using hardcoded ImVec2 values) */
-    /* todo: maybe implement something to prevent that? */
+    Bun::Section("FFlag Presets", ImVec2(455, 98), []() {
+        if (Bun::Button("Presets")) {
+            showc = true;
+        }
+
+        ImGui::Spacing();
+
+        if (Bun::Button("Save Presets")) {
+            /* get the path to the user's desktop */
+            wchar_t* desktopPath;
+            HRESULT hr = SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);
+
+            /* if we successfully get the path, create a directory on the desktop and copy the contents of the presets directory to the new directory */
+            if (SUCCEEDED(hr)) {
+                std::filesystem::path desktop(desktopPath);
+                std::filesystem::create_directory(desktop / "Sinewave Custom Presets");
+                copyDirectoryContents(sinewave / "Settings" / "Presets", desktop / "Sinewave Custom Presets");
+
+                CoTaskMemFree(desktopPath);
+            }
+            else {
+                MessageBoxA(NULL, "Couldn't get desktop path!", "Sinewave", MB_OK | MB_ICONERROR);
+            }
+        }
+
+        //ImGui::Text(("Selected preset: " + currentPreset).c_str());
+    }, "Presets");
+    //static bool showe;
+    //ImGui::BunCheckbox("Show FFlag Presets Window", &showe);
+
+    /*
     if (showe) {
         ImGui::SetNextWindowSize(ImVec2(300, 300));
         ImGui::Begin("FFlag Presets", &showe, ImGuiWindowFlags_NoResize);
         Bun::DarkTheme();
 
-        /* colors */
         ImGuiStyle& style = ImGui::GetStyle();
         ImVec4 background = style.Colors[ImGuiCol_Button];
 
-        /* drawing */
         ImDrawList* list = ImGui::GetWindowDrawList();
         ImVec2 pos = ImGui::GetCursorScreenPos();
         ImVec2 size(284, 258);
@@ -189,12 +217,11 @@ void initFflags() {
             setFflag("FIntRenderShadowIntensity", "0");
         }
         ImGui::End();
-    }
+    }*/
 
     ImGui::Spacing();
 
-    static bool showc;
-    ImGui::BunCheckbox("Show Custom FFlag Presets Window", &showc);
+    //ImGui::BunCheckbox("Show Custom FFlag Presets Window", &showc);
     if (showc) {
         ImGui::SetNextWindowSize(ImVec2(300, 300));
         ImGui::Begin("Custom FFlag Presets", &showc, ImGuiWindowFlags_NoResize);
@@ -236,7 +263,4 @@ void initFflags() {
         ImGui::EndChild();
         ImGui::End();
     }
-
-    ImGui::Dummy(ImVec2(8, 8));
-    ImGui::Text(("Currently using preset: " + currentPreset).c_str());
 }

@@ -7,6 +7,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetConsoleTitleA("Sinewave");
+    checkVersion();
     std::string version = Bootstrapper::init();
 
     checkFFlags();

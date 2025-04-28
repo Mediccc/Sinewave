@@ -223,6 +223,7 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="discord-rpc.dll" />
+    <None Include="version.json" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Roboto-Regular.ttf" />

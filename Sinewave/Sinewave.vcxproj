@@ -135,7 +135,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)discord-rpc.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)Roboto-Regular.ttf" "$(OutDir)"</Command>
+xcopy /Y "$(ProjectDir)Roboto-Regular.ttf" "$(OutDir)"
+xcopy /Y "$(ProjectDir)version.json" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -217,6 +218,7 @@ xcopy /Y "$(ProjectDir)Roboto-Regular.ttf" "$(OutDir)"</Command>
   <ItemGroup>
     <None Include="discord-rpc.dll" />
     <None Include="README.md" />
+    <None Include="version.json" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Roboto-Regular.ttf" />

@@ -57,6 +57,8 @@ public:
     }
 };
 
+void checkVersion();
+
 void sendNotification(const std::wstring& title, const std::wstring& subtitle);
 
 void loadConfig();

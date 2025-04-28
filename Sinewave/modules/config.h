@@ -15,6 +15,9 @@ struct Settings {
 	bool old2006Cursors;
 	bool createShortcut;
 	bool oofSound;
+	bool enableFreeze;
+	int freezeKeybind;
+	std::string theme;
 };
 
 inline void to_json(json& j, const Settings& s) {
@@ -26,7 +29,10 @@ inline void to_json(json& j, const Settings& s) {
 		{"OldCursors", s.oldCursors},
 		{"Old2006Cursors", s.old2006Cursors},
 		{"CreateShortcut", s.createShortcut},
-		{"OofSound", s.oofSound}
+		{"OofSound", s.oofSound},
+		{"EnableFreeze", s.enableFreeze},
+		{"FreezeKeybind", s.freezeKeybind},
+		{"Theme", s.theme}
 	};
 }
 
@@ -39,6 +45,9 @@ inline void from_json(const json& j, Settings& s) {
 	j.at("Old2006Cursors").get_to(s.old2006Cursors);
 	j.at("CreateShortcut").get_to(s.createShortcut);
 	j.at("OofSound").get_to(s.oofSound);
+	j.at("EnableFreeze").get_to(s.enableFreeze);
+	j.at("FreezeKeybind").get_to(s.freezeKeybind);
+	j.at("Theme").get_to(s.theme);
 }
 
 extern Settings config;

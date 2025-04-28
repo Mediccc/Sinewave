@@ -114,11 +114,20 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 /* imgui */
 
-void GUI::initWindow() {
+void GUI::initWindow(bool topmost) {
     ImGui_ImplWin32_EnableDpiAwareness();
     wc = { sizeof(wc), CS_HREDRAW | CS_VREDRAW, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
-    hwnd = ::CreateWindowExW(WS_EX_LAYERED, wc.lpszClassName, L"Sinewave", WS_POPUP, 0, 0, 1920, 1080, nullptr, nullptr, wc.hInstance, nullptr);
+
+    DWORD styles = 0;
+    if (topmost) {
+        styles = WS_EX_LAYERED | WS_EX_TOPMOST;
+    }
+    else {
+        styles = WS_EX_LAYERED;
+    }
+
+    hwnd = ::CreateWindowExW(styles, wc.lpszClassName, L"Sinewave", WS_POPUP, 0, 0, 1920, 1080, nullptr, nullptr, wc.hInstance, nullptr);
 
     /* https://www.youtube.com/watch?v=aY8MNCNN-cY */
     /* thanks */
