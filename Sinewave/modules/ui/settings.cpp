@@ -61,6 +61,13 @@ void initSettings() {
 
         ImGui::Spacing();
 
+        Bun::Keybind("Packet Bind", &config.packetKeybind, ImVec2(110, 35));
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Packet Lag Keybind");
+        }
+
+        ImGui::Spacing();
+
         /* we run the roblox installer in order to replace the registry values, and after that we remove the Sinewave folder from AppData */
         /* maybe I should start commenting my code more */
         /* ok maybe instead of running the roblox installer i could just set the registry values myself */

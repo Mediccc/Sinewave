@@ -16,7 +16,9 @@ struct Settings {
 	bool createShortcut;
 	bool oofSound;
 	bool enableFreeze;
+	bool enablePacketLagger;
 	int freezeKeybind;
+	int packetKeybind;
 	std::string theme;
 };
 
@@ -31,8 +33,10 @@ inline void to_json(json& j, const Settings& s) {
 		{"CreateShortcut", s.createShortcut},
 		{"OofSound", s.oofSound},
 		{"EnableFreeze", s.enableFreeze},
+		{"EnablePacket", s.enablePacketLagger},
 		{"FreezeKeybind", s.freezeKeybind},
-		{"Theme", s.theme}
+		{"PacketKeybind", s.packetKeybind},
+		{"Theme", s.theme},
 	};
 }
 
@@ -46,7 +50,9 @@ inline void from_json(const json& j, Settings& s) {
 	j.at("CreateShortcut").get_to(s.createShortcut);
 	j.at("OofSound").get_to(s.oofSound);
 	j.at("EnableFreeze").get_to(s.enableFreeze);
+	j.at("EnablePacket").get_to(s.enablePacketLagger);
 	j.at("FreezeKeybind").get_to(s.freezeKeybind);
+	j.at("PacketKeybind").get_to(s.packetKeybind);
 	j.at("Theme").get_to(s.theme);
 }
 

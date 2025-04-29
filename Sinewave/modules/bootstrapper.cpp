@@ -20,6 +20,7 @@ void Bootstrapper::initDirectories() {
 				config.discordRPC = true;
 				config.createShortcut = true;
 				config.freezeKeybind = -1;
+				config.packetKeybind = -1;
 				config.theme = "Default";
 				json j = config;
 

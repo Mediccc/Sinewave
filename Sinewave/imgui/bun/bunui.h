@@ -10,7 +10,7 @@
 namespace Bun {
     static int selectedPage;
     static int selectedTab;
-    static bool waitingKeybind;
+    static std::unordered_map<ImGuiID, bool> waitingKeybindMap;
     static int keyb;
     static ImVec4 bg;
 

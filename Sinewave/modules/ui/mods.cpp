@@ -25,7 +25,12 @@ void initMods() {
             Config::saveConfig();
         }
 
-        ImGui::SameLine();
+        ImGui::Spacing();
+
+        if (ImGui::BunCheckbox("Enable Packet Lag (Toggle to lag!)", &config.enablePacketLagger)) {
+            MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
+            Config::saveConfig();
+        }
 
     }, "Misc");
 

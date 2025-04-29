@@ -1,7 +1,24 @@
 #include "launcher.h"
+#include <windivert.h>
 
 DWORD id;
 bool freeze = false;
+bool lag = false;
+HANDLE wHandle;
+WINDIVERT_ADDRESS addr;
+char packet[65535];
+UINT packetLen;
+
+void initWDV() {
+    /* windivert init */
+    /* this slows down every packet.. not only roblox.. but there shouldn't be any issues because it's a toggle anyway */
+    /* if people complain about it i'll probably change it */
+    wHandle = WinDivertOpen("ip", WINDIVERT_LAYER_NETWORK, 0, 0); 
+    if (wHandle == INVALID_HANDLE_VALUE) {
+        std::cout << "[-] Error: INVALID_HANDLE_VALUE\n";
+        exit(1);
+    }
+}
 
 /* i could also use ntsuspendprocess for this */
 void suspend() {
@@ -30,6 +47,28 @@ void suspend() {
     }
 }
 
+void lagger() {
+    while (true) {
+        if (GetAsyncKeyState(config.packetKeybind) & 1) {
+            lag = !lag;
+        }
+
+        if (!WinDivertRecv(wHandle, packet, sizeof(packet), &packetLen, &addr)) {
+            std::cout << "[-] Packet receive error\n";
+            continue;
+        }
+
+        if (lag) {
+            Sleep(100);
+        }
+
+        if (!WinDivertSend(wHandle, packet, packetLen, &packetLen, &addr)) {
+            std::cout << "[-] Packet send error\n";
+            continue;
+        }
+    }
+}
+
 void freezer() {
     while (true) {
         if (GetAsyncKeyState(config.freezeKeybind) & 0x8000) {
@@ -48,6 +87,21 @@ void freezer() {
     }
 }
 
+BOOL IsElevated() {
+    BOOL fRet = FALSE;
+    HANDLE hToken = NULL;
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        TOKEN_ELEVATION Elevation;
+        DWORD cbSize = sizeof(TOKEN_ELEVATION);
+        if (GetTokenInformation(hToken, TokenElevation, &Elevation, sizeof(Elevation), &cbSize)) {
+            fRet = Elevation.TokenIsElevated;
+        }
+    }
+    if (hToken) {
+        CloseHandle(hToken);
+    }
+    return fRet;
+}
 
 void startLauncher(LPSTR cmd, const std::string& version) {
     json j;
@@ -102,6 +156,18 @@ void startLauncher(LPSTR cmd, const std::string& version) {
             GetWindowThreadProcessId(hwnd, &id);
             std::thread freezeRoblox(freezer);
             freezeRoblox.detach();
+        }
+    }
+    
+    if (config.enablePacketLagger) {
+        if (IsElevated()) {
+            Logger::log(Logger::INFO, "Process is elevated");
+            initWDV();
+            std::thread lagRoblox(lagger);
+            lagRoblox.detach();
+        }
+        else {
+            MessageBoxA(NULL, "It looks like the packet lagger is enabled, but Sinewave doesn't have admin permissions.\nGo to Sinewave.exe, right click Properties & then Compatiblity\nAfter that, turn on Run this program as administrator\nYou can keep playing, but the packet lagger won't work.", "Sinewave", MB_OK | MB_ICONWARNING);
         }
     }
 

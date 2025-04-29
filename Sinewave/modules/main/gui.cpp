@@ -102,7 +102,7 @@ void launchGUI() {
         if (show) {
             ImGui::SetNextWindowSize({ 650, 400 });
 
-            ImGui::Begin("Sinewave | v1.0.6", &show, ImGuiWindowFlags_NoResize);
+            ImGui::Begin("Sinewave | v1.0.7", &show, ImGuiWindowFlags_NoResize);
 
             NavigationExample();
 

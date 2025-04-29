@@ -119,6 +119,9 @@ std::wstring KeyNameFromVirtualKeyCode(const unsigned virtualKeyCode)
 
 bool Bun::Keybind(const char* name, int* key, const ImVec2& size) {
     ImGui::PushID(name);
+    
+    ImGuiID id = ImGui::GetID(name);
+    bool& waitingKeybind = waitingKeybindMap[id];
 
     std::string text;
     if (waitingKeybind) {
@@ -180,7 +183,7 @@ bool Bun::NavigationButton(const char* name, const ImVec2& size) {
     bool b = Button(name, size, p);
     pos.y += 45; /* move cursor for the next button, feel free to tweak this if it's too much for your button's size */
 
-    //ImGui::SetCursorScreenPos(pos); feel free to uncomment this if you want, i'm using imgui::spacing() rn
+    //ImGui::SetCursorScree nPos(pos); feel free to uncomment this if you want, i'm using imgui::spacing() rn
     ImGui::PopID();
 
     return b;

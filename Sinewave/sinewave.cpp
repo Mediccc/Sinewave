@@ -4,6 +4,14 @@
 #include "modules/main/launcher.h"
 #include "modules/config.h"
 
+/*
+
+    thinking about it
+    i could really clean some of my code
+    and even make it better
+
+*/
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     SetConsoleTitleA("Sinewave");
