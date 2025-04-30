@@ -87,7 +87,7 @@ void checkVersion() {
             std::filesystem::remove_all(sinewave);
 
             /* download and extract */
-            Http::downloadFile("https://github.com/Mediccc/Sinewave/releases/download/v1.0.8/Sinewave.v1.0.8.zip", p.string());
+            Http::downloadFile("https://github.com/Mediccc/Sinewave/releases/download/v1.0.9/Sinewave.v1.0.9.zip", p.string());
             extractFile(p.string(), desktop.string());
 
             /* run new version */
