@@ -12,6 +12,7 @@
 #include "logger.h"
 #include "http.h"
 #include "watcher.h"
+#include <miniz.h>
 
 #pragma warning(disable: 4996)
 
@@ -56,6 +57,8 @@ public:
         exit(5);
     }
 };
+
+std::filesystem::path getDesktop();
 
 void checkVersion();
 

@@ -122,23 +122,16 @@ std::string Bootstrapper::init() {
 				char exePath[MAX_PATH];
 				GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
-				wchar_t* desktopPath;
-				hr = SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);
+				std::filesystem::path desktop = getDesktop();
+				std::filesystem::path shortcutPath = desktop / L"Sinewave.lnk";
+				hr = CreateLink(
+					std::filesystem::path(exePath).c_str(),
+					shortcutPath.string().c_str(),
+					L"Sinewave"
+				);
 
-				if (SUCCEEDED(hr)) {
-					std::filesystem::path desktop(desktopPath);
-					std::filesystem::path shortcutPath = desktop / L"Sinewave.lnk";
-					hr = CreateLink(
-						std::filesystem::path(exePath).c_str(),
-						shortcutPath.string().c_str(),
-						L"Sinewave"
-					);
-
-					if (!SUCCEEDED(hr)) {
-						Logger::log(Logger::ERR, "Couldn't create shortcut!");
-					}
-
-					CoTaskMemFree(desktopPath);
+				if (!SUCCEEDED(hr)) {
+					Logger::log(Logger::ERR, "Couldn't create shortcut!");
 				}
 			}
 			fclose(stdout);

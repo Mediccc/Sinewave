@@ -49,6 +49,7 @@ void Http::downloadFile(const std::string& url, const std::string& fileName) {
 	
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 
 	file = fopen(fileName.c_str(), "wb");
@@ -56,7 +57,7 @@ void Http::downloadFile(const std::string& url, const std::string& fileName) {
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
 		curl_easy_perform(curl);
 		fclose(file);
-		//Logger::log(Logger::SUCCESS, "Finished installing " + fileName);
+		Logger::log(Logger::SUCCESS, "Finished installing " + fileName);
 	}
 
 	curl_easy_cleanup(curl);

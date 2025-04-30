@@ -90,6 +90,9 @@
     <ClCompile Include="imgui\bun\bunui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\miniz.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\libcurl_a.lib" />
@@ -209,6 +212,9 @@
     <ClInclude Include="imgui\bun\bunui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\miniz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sinewave.rc">
@@ -216,7 +222,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico">
+    <Image Include="icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -10,6 +10,63 @@ std::atomic<bool> discordUpdate(true);
 std::mutex discord;
 DiscordRichPresence discordPresence;
 
+/*
+
+@author: ChatGPT
+
+*/
+void extractFile(const std::string& zipPath, const std::string& outputDir) {
+    mz_zip_archive zip = {};
+    if (!mz_zip_reader_init_file(&zip, zipPath.c_str(), 0)) {
+        Logger::log(Logger::ERR, "Couldn't open zip file!");
+        return;
+    }
+
+    int fileCount = (int)mz_zip_reader_get_num_files(&zip);
+    for (int i = 0; i < fileCount; ++i) {
+        mz_zip_archive_file_stat file_stat;
+        if (!mz_zip_reader_file_stat(&zip, i, &file_stat)) {
+            continue;
+        }
+
+        std::string filePath = outputDir + "/" + file_stat.m_filename;
+
+        if (mz_zip_reader_is_file_a_directory(&zip, i)) {
+            std::filesystem::create_directories(filePath);
+        }
+        else {
+            std::filesystem::create_directories(std::filesystem::path(filePath).parent_path());
+
+            size_t uncomp_size = 0;
+            void* p = mz_zip_reader_extract_to_heap(&zip, i, &uncomp_size, 0);
+            if (!p) {
+                continue;
+            }
+
+            std::ofstream ofs(filePath, std::ios::binary);
+            ofs.write((const char*)p, uncomp_size);
+            ofs.close();
+
+            mz_free(p);
+        }
+    }
+
+    mz_zip_reader_end(&zip);
+}
+
+std::filesystem::path getDesktop() {
+    wchar_t* desktopPath;
+    HRESULT hr = SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath);
+    std::filesystem::path p;
+
+    if (SUCCEEDED(hr)) {
+        p = desktopPath;
+        CoTaskMemFree(desktopPath);
+    }
+
+    return p;
+}
+
 void checkVersion() {
     HttpResponse response = Http::newRequest("https://raw.githubusercontent.com/Mediccc/Sinewave/refs/heads/master/Sinewave/version.json", "GET");
     json j = json::parse(response.content);
@@ -23,6 +80,28 @@ void checkVersion() {
         int box = MessageBoxA(NULL, "It looks like you're using an outdated version of Sinewave.\nWould you like to install the new version?", "Sinewave", MB_YESNO | MB_ICONQUESTION);
         if (box == IDYES) {
             ShellExecute(0, 0, L"https://github.com/Mediccc/Sinewave/releases", 0, 0, SW_SHOW);
+            /* i know deleting the Sinewave directory isn't the most convenient, but there's nothing to it really.. fflags will be removed soon anyways */
+            /* so there's no point in saving the user's fflags presets here, there's a backup/save presets option for that lol */
+            std::filesystem::path desktop = getDesktop();
+            std::filesystem::path p = desktop / "Release.zip";
+            std::filesystem::remove_all(sinewave);
+
+            /* download and extract */
+            Http::downloadFile("https://github.com/Mediccc/Sinewave/releases/download/v1.0.8/Sinewave.v1.0.8.zip", p.string());
+            extractFile(p.string(), desktop.string());
+
+            /* run new version */
+            STARTUPINFOA si;
+            PROCESS_INFORMATION pi;
+
+            ZeroMemory(&si, sizeof(si));
+            si.cb = sizeof(si);
+            ZeroMemory(&pi, sizeof(pi));
+
+            std::string p2 = std::filesystem::path(desktop / "Release" / "Sinewave.exe").string();
+            if (CreateProcessA(p2.c_str(), NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+                ExitProcess(0);
+            }
         }
     }
 }

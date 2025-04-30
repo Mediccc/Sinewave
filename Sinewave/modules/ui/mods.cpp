@@ -25,11 +25,24 @@ void initMods() {
             Config::saveConfig();
         }
 
+        ImGui::SameLine();
+
+        Bun::Keybind("", &config.freezeKeybind, ImVec2(29, 28));
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Client Freeze Keybind");
+        }
+
         ImGui::Spacing();
 
-        if (ImGui::BunCheckbox("Enable Packet Lag (Toggle to lag!)", &config.enablePacketLagger)) {
+        if (ImGui::BunCheckbox("Enable Lag Switch (Toggle to lag!)", &config.enablePacketLagger)) {
             MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
             Config::saveConfig();
+        }
+
+        ImGui::SameLine();
+        Bun::Keybind(" ", &config.packetKeybind, ImVec2(29, 28));
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("Lag Switch Keybind");
         }
 
     }, "Misc");

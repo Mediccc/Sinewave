@@ -23,7 +23,7 @@ void Bun::DarkTheme() {
     }
 }
 
-bool Bun::Button(const char* name, const ImVec2& size, const ImVec2& pos) {
+bool Bun::Button(const char* name, const ImVec2& size, bool nt, const ImVec2& pos) {
     ImGui::PushID(name);
 
     static std::unordered_map<ImGuiID, float> pMap; /* i added maps so we can have multiple buttons */
@@ -69,7 +69,9 @@ bool Bun::Button(const char* name, const ImVec2& size, const ImVec2& pos) {
         list->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), ImGui::ColorConvertFloat4ToU32(active), 2.0f);
     }
 
-    list->AddText(tPos, IM_COL32(255, 255, 255, 255), name);
+    if (!nt) {
+        list->AddText(tPos, IM_COL32(255, 255, 255, 255), name);
+    }
 
     ImGui::PopID();
 
@@ -125,7 +127,7 @@ bool Bun::Keybind(const char* name, int* key, const ImVec2& size) {
 
     std::string text;
     if (waitingKeybind) {
-        text = "Press Key";
+        text = "";
     }
     else if (*key != -1) {
         std::wstring wlabel = KeyNameFromVirtualKeyCode(*key);
@@ -135,8 +137,7 @@ bool Bun::Keybind(const char* name, int* key, const ImVec2& size) {
         text = name;
     }
 
-
-    bool b = Button(text.c_str(), size);
+    bool b = Button(text.c_str(), size, false);
     if (b) {
         waitingKeybind = true;
     }
@@ -180,7 +181,7 @@ bool Bun::NavigationButton(const char* name, const ImVec2& size) {
     ImDrawList* list = ImGui::GetWindowDrawList();
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImVec2 p = ImVec2(pos.x + 10, pos.y + 10);
-    bool b = Button(name, size, p);
+    bool b = Button(name, size, false, p);
     pos.y += 45; /* move cursor for the next button, feel free to tweak this if it's too much for your button's size */
 
     //ImGui::SetCursorScree nPos(pos); feel free to uncomment this if you want, i'm using imgui::spacing() rn

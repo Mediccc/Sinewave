@@ -16,7 +16,7 @@ namespace Bun {
 
     void DarkTheme();
 
-    bool Button(const char* name, const ImVec2& size = ImVec2(110, 35), const ImVec2& pos = ImGui::GetCursorScreenPos());
+    bool Button(const char* name, const ImVec2& size = ImVec2(110, 35), bool nt = false, const ImVec2& pos = ImGui::GetCursorScreenPos());
     void Checkbox();
     void Slider();
     void Section(const char* name, const ImVec2& size, std::function<void()> fn, const char* text = nullptr);
