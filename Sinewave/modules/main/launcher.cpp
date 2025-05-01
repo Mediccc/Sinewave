@@ -10,12 +10,11 @@ char packet[65535];
 UINT packetLen;
 
 void initWDV() {
-    /* windivert init */
-    /* this slows down every packet.. not only roblox.. but there shouldn't be any issues because it's a toggle anyway */
-    /* if people complain about it i'll probably change it */
-    wHandle = WinDivertOpen("ip", WINDIVERT_LAYER_NETWORK, 0, 0); 
+    std::string filter = "ip.DstAddr == " + serverIp + " || ip.SrcAddr == " + serverIp;
+    wHandle = WinDivertOpen(filter.c_str(), WINDIVERT_LAYER_NETWORK, 0, 0);
     if (wHandle == INVALID_HANDLE_VALUE) {
-        std::cout << "[-] Error: INVALID_HANDLE_VALUE\n";
+        Logger::log(Logger::ERR, "Lag Switch Error: INVALID_HANDLE_VALUE\n");
+        MessageBoxA(NULL, "INVALID_HANDLE_VALUE", "Sinewave", MB_OK | MB_ICONERROR);
         exit(1);
     }
 }
@@ -51,10 +50,11 @@ void lagger() {
     while (true) {
         if (GetAsyncKeyState(config.packetKeybind) & 1) {
             lag = !lag;
+            Logger::log(Logger::INFO, "Lag Switch is now " + std::string(lag ? "enabled" : "disabled") + "!");
         }
 
         if (!WinDivertRecv(wHandle, packet, sizeof(packet), &packetLen, &addr)) {
-            std::cout << "[-] Packet receive error\n";
+            Logger::log(Logger::ERR, "Packet receive error!");
             continue;
         }
 
@@ -63,7 +63,7 @@ void lagger() {
         }
 
         if (!WinDivertSend(wHandle, packet, packetLen, &packetLen, &addr)) {
-            std::cout << "[-] Packet send error\n";
+            Logger::log(Logger::ERR, "Packet send error!");
             continue;
         }
     }
@@ -152,22 +152,32 @@ void startLauncher(LPSTR cmd, const std::string& version) {
             MessageBoxA(NULL, "Roblox window not found!", "Sinewave Freezer", MB_OK);
         }
         else {
-            Logger::log(Logger::SUCCESS, "Roblox Freezer started!");
-            GetWindowThreadProcessId(hwnd, &id);
-            std::thread freezeRoblox(freezer);
-            freezeRoblox.detach();
+            if (config.freezeKeybind != -1) {
+                Logger::log(Logger::SUCCESS, "Roblox Freezer started!");
+                GetWindowThreadProcessId(hwnd, &id);
+                std::thread freezeRoblox(freezer);
+                freezeRoblox.detach();
+            }
+            else {
+                MessageBoxA(NULL, "It looks like you don't have a keybind set for the freeze switch!\n\nPlease click the button next to the freeze switch checkmark and then press any key to set the keybind!", "Sinewave", MB_OK | MB_ICONWARNING);
+            }
         }
     }
     
     if (config.enablePacketLagger) {
         if (IsElevated()) {
             Logger::log(Logger::INFO, "Process is elevated");
-            initWDV();
-            std::thread lagRoblox(lagger);
-            lagRoblox.detach();
+            if (config.packetKeybind != -1) {
+                initWDV();
+                std::thread lagRoblox(lagger);
+                lagRoblox.detach();
+            }
+            else {
+                MessageBoxA(NULL, "It looks like you don't have a keybind set for the lag switch!\n\nPlease click the button next to the lag switch checkmark and then press any key to set the keybind!", "Sinewave", MB_OK | MB_ICONWARNING);
+            }
         }
         else {
-            MessageBoxA(NULL, "It looks like the packet lagger is enabled, but Sinewave doesn't have admin permissions.\nGo to Sinewave.exe, right click Properties & then Compatiblity\nAfter that, turn on Run this program as administrator\nYou can keep playing, but the packet lagger won't work.", "Sinewave", MB_OK | MB_ICONWARNING);
+            MessageBoxA(NULL, "It looks like the lag switch is enabled, but Sinewave doesn't have admin permissions.\n\nGo to Sinewave.exe, right click Properties & then Compatiblity\n\nAfter that, turn on Run this program as administrator\n\nYou can keep playing, but the lag switch won't work.", "Sinewave", MB_OK | MB_ICONWARNING);
         }
     }
 

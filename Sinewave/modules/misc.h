@@ -24,6 +24,7 @@ extern char* localAppdata;
 extern std::filesystem::path sinewave;
 extern std::filesystem::path fflags;
 extern std::filesystem::path robloxp;
+extern std::string serverIp;
 extern std::atomic<bool> discordUpdate;
 extern std::mutex discord;
 extern DiscordRichPresence discordPresence;

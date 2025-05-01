@@ -21,7 +21,8 @@ void initMods() {
         ImGui::Spacing();
 
         if (ImGui::BunCheckbox("Enable Client Freezing (Hold to freeze!)", &config.enableFreeze)) {
-            MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
+            /* do we even need the messagebox? */
+            //MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
             Config::saveConfig();
         }
 
@@ -35,7 +36,7 @@ void initMods() {
         ImGui::Spacing();
 
         if (ImGui::BunCheckbox("Enable Lag Switch (Toggle to lag!)", &config.enablePacketLagger)) {
-            MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
+            //MessageBoxA(NULL, "I don't know if this makes Hyperion mad or not.\nI am not responsible for any banned accounts.", "Sinewave", MB_OK | MB_ICONWARNING);
             Config::saveConfig();
         }
 

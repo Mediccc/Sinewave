@@ -5,6 +5,7 @@ char* localAppdata = getenv("LOCALAPPDATA");
 std::filesystem::path sinewave = std::filesystem::path(appdata) / "Sinewave";
 std::filesystem::path fflags = sinewave / "Settings" / "fflags.json";
 std::filesystem::path robloxp = std::filesystem::path(localAppdata) / "Roblox";
+std::string serverIp = "";
 std::atomic<bool> watchingLogs(true);
 std::atomic<bool> discordUpdate(true);
 std::mutex discord;

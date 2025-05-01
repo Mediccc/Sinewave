@@ -57,7 +57,7 @@ void Http::downloadFile(const std::string& url, const std::string& fileName) {
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
 		curl_easy_perform(curl);
 		fclose(file);
-		Logger::log(Logger::SUCCESS, "Finished installing " + fileName);
+		//Logger::log(Logger::SUCCESS, "Finished installing " + fileName);
 	}
 
 	curl_easy_cleanup(curl);

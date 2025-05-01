@@ -14,7 +14,6 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    SetConsoleTitleA("Sinewave");
     std::string version = Bootstrapper::init();
 
     checkFFlags();
@@ -28,6 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (config.debugMode) {
         AllocConsole();
         freopen("CONOUT$", "w", stdout);
+        SetConsoleTitleA("Sinewave");
         Logger::log(Logger::SUCCESS, "Debug mode on!");
     }
 

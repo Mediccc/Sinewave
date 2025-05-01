@@ -74,11 +74,11 @@ void Watcher::init() {
         std::string current = getLogFile();
 
         if (current != first) {
-            Logger::log(Logger::INFO, "Got log file " + current);
+            Logger::log(Logger::INFO, "Got latest log file!");
             std::this_thread::sleep_for(std::chrono::seconds(4));
 
             /* regex */
-            std::string ip = getServerId(current);
+            serverIp = getServerId(current);
             std::string universeId = getUniverseId(current);
 
             if (config.discordRPC) {
@@ -97,7 +97,7 @@ void Watcher::init() {
 
             if (config.serverRegion) {
                 /* get the server's location */
-                std::string url = "http://ip-api.com/json/" + ip;
+                std::string url = "http://ip-api.com/json/" + serverIp;
                 HttpResponse res = Http::newRequest(url, "GET");
                 json j = json::parse(res.content);
                 std::string a = j["country"].get<std::string>();
