@@ -10,6 +10,8 @@ It includes a variety of features, such as a **FFlag editor**, **customization m
 * **FFlag Editor** with custom presets.
 * **Appearance/Customization Mods** such as the old oof sounds, custom cursors, etc.
 * **Discord RPC** so your  Discord friends can see what you're playing!
+* **Lag Switch & Freeze Switch** but don't use these for bad purposes!
+* **UI Themes** so you can customize your UI!
 
 # Installation
 1. Make sure to download the latest release from the [Releases](https://github.com/Mediccc/Sinewave/releases/) page
