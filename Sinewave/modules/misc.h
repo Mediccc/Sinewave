@@ -61,6 +61,8 @@ public:
 
 std::filesystem::path getDesktop();
 
+void extractFile(const std::string& zipPath, const std::string& outputDir);
+
 void checkVersion();
 
 void sendNotification(const std::wstring& title, const std::wstring& subtitle);

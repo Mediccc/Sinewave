@@ -139,6 +139,7 @@ void startLauncher(LPSTR cmd, const std::string& version) {
 
     if (config.discordRPC) {
         discordPresence.state = ("Playing " + Watcher::gameName).c_str();
+        discordPresence.smallImageKey = "sinewave";
         discordPresence.largeImageKey = Watcher::imageKey.c_str();
         Discord_UpdatePresence(&discordPresence);
 
@@ -183,5 +184,5 @@ void startLauncher(LPSTR cmd, const std::string& version) {
 
     WaitForSingleObject(pi.hProcess, INFINITE);
     //FreeConsole();
-    ExitProcess(0);
+    //ExitProcess(0);
 }

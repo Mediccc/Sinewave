@@ -81,14 +81,14 @@ void checkVersion() {
         int box = MessageBoxA(NULL, "It looks like you're using an outdated version of Sinewave.\nWould you like to install the new version?", "Sinewave", MB_YESNO | MB_ICONQUESTION);
         if (box == IDYES) {
             ShellExecute(0, 0, L"https://github.com/Mediccc/Sinewave/releases", 0, 0, SW_SHOW);
-            /* i know deleting the Sinewave directory isn't the most convenient, but there's nothing to it really.. fflags will be removed soon anyways */
-            /* so there's no point in saving the user's fflags presets here, there's a backup/save presets option for that lol */
+            /* i know deleting the Sinewave directory isn't the most convenient, but there's nothing to it really.. */
+            /* there's no point in saving the user's fflags presets here, there's a backup/save presets option for that lol */
             std::filesystem::path desktop = getDesktop();
             std::filesystem::path p = desktop / "Release.zip";
             std::filesystem::remove_all(sinewave);
 
             /* download and extract */
-            Http::downloadFile("https://github.com/Mediccc/Sinewave/releases/download/v1.1.0/Sinewave.v1.1.0.zip", p.string());
+            Http::downloadFile("https://github.com/Mediccc/Sinewave/releases/download/v1.1.1/Sinewave.v1.1.1.zip", p.string());
             extractFile(p.string(), desktop.string());
 
             /* run new version */
@@ -134,12 +134,14 @@ void sendNotification(const std::wstring& title, const std::wstring& subtitle) {
 }
 
 void updatePresence() {
+    std::string state = "Playing " + Watcher::gameName;
     while (discordUpdate) {
         {
             std::lock_guard<std::mutex> lock(discord);
             if (!Watcher::imageKey.empty()) {
+                discordPresence.smallImageKey = "sinewave";
                 discordPresence.largeImageKey = Watcher::imageKey.c_str();
-                discordPresence.state = ("Playing " + Watcher::gameName).c_str();
+                discordPresence.state = state.c_str();
             }
             Discord_UpdatePresence(&discordPresence);
         }

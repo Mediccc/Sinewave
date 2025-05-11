@@ -14,6 +14,7 @@ static size_t write_data(void* ptr, size_t size, size_t nmemb, void* stream)
 }
 
 
+/* unfinished function */
 HttpResponse Http::newRequest(const std::string& url, const std::string& method, std::optional<std::unordered_map<std::string, std::string>> headers) {
 	CURL* curl = curl_easy_init();
 	HttpResponse response;
@@ -46,7 +47,7 @@ HttpResponse Http::newRequest(const std::string& url, const std::string& method,
 void Http::downloadFile(const std::string& url, const std::string& fileName) {
 	CURL* curl = curl_easy_init();
 	FILE* file;
-	
+
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);

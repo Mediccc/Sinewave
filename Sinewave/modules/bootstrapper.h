@@ -15,6 +15,7 @@
 #include "misc.h"
 #include "config.h"
 #include <ShortcutProvider.h>
+#include <string>
 
 using json = nlohmann::json;
 
